@@ -47,12 +47,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 2. Simulated Acceptance Fee Payment Processing
-  if (paymentBtn) {
-    paymentBtn.addEventListener('click', async (e) => {
+  // 2. Simulated Acceptance Fee Payment Processing via Checkout Modal
+  const modalPayConfirmBtn = document.getElementById('hfrsModalPayConfirmBtn');
+  if (modalPayConfirmBtn) {
+    modalPayConfirmBtn.addEventListener('click', async (e) => {
       e.preventDefault();
-      paymentBtn.disabled = true;
-      paymentBtn.innerHTML = 'Processing Payment...';
+      modalPayConfirmBtn.disabled = true;
+      modalPayConfirmBtn.innerHTML = '⌛ Processing & Encrypting Payment Token...';
 
       try {
         const res = await fetch('/api/student/payment', {
@@ -63,19 +64,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await res.json();
 
         if (data.success) {
-          showAlert(`Simulated Payment Successful! Reference: ${data.reference}. Proceeding to Step 3: Document Uploads...`, 'success');
+          showAlert(`Payment Successful & Encrypted! Reference: ${data.reference}. Proceeding to Step 3: Document Uploads...`, 'success');
+          const modal = document.getElementById('hfrsPaymentGatewayModal');
+          if (modal) modal.style.display = 'none';
           setTimeout(() => {
             window.location.href = '/student/registration?step=3';
           }, 1200);
         } else {
-          showAlert(data.error || 'Simulated payment failed.');
-          paymentBtn.disabled = false;
-          paymentBtn.innerHTML = 'Pay Acceptance & Registration Fee (₦25,000)';
+          showAlert(data.error || 'Payment transaction failed.');
+          modalPayConfirmBtn.disabled = false;
+          modalPayConfirmBtn.innerHTML = 'Complete Payment (₦25,000.00)';
         }
       } catch (err) {
-        showAlert('Network error while processing payment.');
-        paymentBtn.disabled = false;
-        paymentBtn.innerHTML = 'Pay Acceptance & Registration Fee (₦25,000)';
+        showAlert('Network error while processing payment transaction.');
+        modalPayConfirmBtn.disabled = false;
+        modalPayConfirmBtn.innerHTML = 'Complete Payment (₦25,000.00)';
       }
     });
   }

@@ -12,26 +12,26 @@
 
         <div class="hfrs-top-stepper">
           <a href="/student/registration?step=1" class="hfrs-top-step <%= currentStep === 1 ? 'active' : '' %> <%= profile && profile.phone ? 'completed' : '' %>">
-            <div class="hfrs-top-step-node">1</div>
-            <div class="hfrs-top-step-title">Data Diri (Bio-Data)</div>
+            <div class="hfrs-top-step-node"><%= profile && profile.phone && currentStep !== 1 ? '✓' : '1' %></div>
+            <div class="hfrs-top-step-title"><%= profile && profile.phone && currentStep !== 1 ? '✓ ' : '' %>Data Diri (Bio-Data)</div>
             <div class="hfrs-top-step-desc">Personal & Academic Info</div>
           </a>
 
           <a href="/student/registration?step=2" class="hfrs-top-step <%= currentStep === 2 ? 'active' : '' %> <%= payment ? 'completed' : '' %>">
-            <div class="hfrs-top-step-node">2</div>
-            <div class="hfrs-top-step-title">Fee & Payment Tracking</div>
+            <div class="hfrs-top-step-node"><%= payment && currentStep !== 2 ? '✓' : '2' %></div>
+            <div class="hfrs-top-step-title"><%= payment && currentStep !== 2 ? '✓ ' : '' %>Fee & Payment Tracking</div>
             <div class="hfrs-top-step-desc">Acceptance Fee (₦25,000)</div>
           </a>
 
           <a href="/student/registration?step=3" class="hfrs-top-step <%= currentStep === 3 ? 'active' : '' %> <%= documents.length >= 2 ? 'completed' : '' %>">
-            <div class="hfrs-top-step-node">3</div>
-            <div class="hfrs-top-step-title">Academic Credentials</div>
+            <div class="hfrs-top-step-node"><%= documents.length >= 2 && currentStep !== 3 ? '✓' : '3' %></div>
+            <div class="hfrs-top-step-title"><%= documents.length >= 2 && currentStep !== 3 ? '✓ ' : '' %>Academic Credentials</div>
             <div class="hfrs-top-step-desc">O-Level & Admission Letter</div>
           </a>
 
           <a href="/student/registration?step=4" class="hfrs-top-step <%= currentStep === 4 ? 'active' : '' %> <%= registration && registration.status === 'pending_verification' ? 'completed' : '' %>">
-            <div class="hfrs-top-step-node">4</div>
-            <div class="hfrs-top-step-title">Final Verification Submit</div>
+            <div class="hfrs-top-step-node"><%= registration && registration.status === 'pending_verification' && currentStep !== 4 ? '✓' : '4' %></div>
+            <div class="hfrs-top-step-title"><%= registration && registration.status === 'pending_verification' && currentStep !== 4 ? '✓ ' : '' %>Final Verification Submit</div>
             <div class="hfrs-top-step-desc">Submit for Admin Review</div>
           </a>
         </div>
@@ -161,11 +161,95 @@
               <a href="/student/registration?step=3" class="hfrs-btn hfrs-btn-primary">Proceed to Step 3: Document Uploads &rarr;</a>
             </div>
           <% } else { %>
-            <button id="hfrsPayBtn" class="hfrs-btn hfrs-btn-success" style="width: 100%; padding: 0.85rem; font-size: 1.05rem;">
-              Pay Acceptance & Registration Fee (₦25,000) [Simulated Flow]
+            <button id="hfrsPayBtn" class="hfrs-btn hfrs-btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1.05rem;" onclick="openHfrsPaymentModal()">
+              💳 Pay Acceptance & Registration Fee (₦25,000)
             </button>
           <% } %>
         </div>
+
+        <!-- Interactive Payment Gateway Checkout Modal -->
+        <div id="hfrsPaymentGatewayModal" class="hfrs-modal-overlay" style="display: none;">
+          <div class="hfrs-modal-card" style="max-width: 440px;">
+            <div class="hfrs-modal-header">
+              <div>
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: #000000; margin: 0;">💳 UNICROSS Payment Gateway</h3>
+                <small style="color: var(--hfrs-text-muted);">Simulated Secure Payment Gateway</small>
+              </div>
+              <button class="hfrs-modal-close" onclick="closeHfrsPaymentModal()">&times;</button>
+            </div>
+
+            <div class="hfrs-modal-body">
+              <div style="background: #f8fafc; padding: 0.85rem; border-radius: 6px; border: 1px solid var(--hfrs-border-color); margin-bottom: 1rem; text-align: center;">
+                <div style="font-size: 0.75rem; color: var(--hfrs-text-muted); font-weight: 700;">AMOUNT PAYABLE</div>
+                <div style="font-size: 1.6rem; font-weight: 800; color: var(--hfrs-blue-primary);">₦25,000.00</div>
+                <div style="font-size: 0.75rem; color: var(--hfrs-text-secondary);">Fresher Acceptance & Registration Fee</div>
+              </div>
+
+              <div style="display: flex; gap: 0.4rem; margin-bottom: 1rem;">
+                <button type="button" id="payTabCard" class="hfrs-btn hfrs-btn-primary" style="flex: 1; font-size: 0.8rem; padding: 0.35rem;" onclick="switchPaymentMethod('card')">💳 Card</button>
+                <button type="button" id="payTabBank" class="hfrs-btn hfrs-btn-outline" style="flex: 1; font-size: 0.8rem; padding: 0.35rem;" onclick="switchPaymentMethod('bank')">🏛️ Transfer</button>
+                <button type="button" id="payTabUssd" class="hfrs-btn hfrs-btn-outline" style="flex: 1; font-size: 0.8rem; padding: 0.35rem;" onclick="switchPaymentMethod('ussd')">📱 USSD</button>
+              </div>
+
+              <!-- Card Inputs View -->
+              <div id="hfrsCardPaymentView">
+                <div class="hfrs-form-group mb-2">
+                  <label class="hfrs-label">Card Number</label>
+                  <input type="text" class="hfrs-input" value="5399 4100 2891 0042" readonly style="letter-spacing: 1px;">
+                </div>
+
+                <div class="row">
+                  <div class="col-6 hfrs-form-group mb-2">
+                    <label class="hfrs-label">Expiry Date</label>
+                    <input type="text" class="hfrs-input" value="12/28" readonly>
+                  </div>
+                  <div class="col-6 hfrs-form-group mb-2">
+                    <label class="hfrs-label">CVV</label>
+                    <input type="password" class="hfrs-input" value="892" readonly>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bank Transfer View -->
+              <div id="hfrsBankPaymentView" style="display: none; background: #f1f5f9; padding: 0.85rem; border-radius: 6px; font-size: 0.85rem; margin-bottom: 1rem;">
+                <div><strong>Bank Name:</strong> UNICROSS Microfinance / Zenith Bank</div>
+                <div><strong>Account Number:</strong> 1014892019</div>
+                <div><strong>Account Name:</strong> UNICROSS Freshers Registration</div>
+                <small style="color: var(--hfrs-text-muted);">Transfer ₦25,000 to the account above, then click Complete Payment.</small>
+              </div>
+
+              <!-- USSD View -->
+              <div id="hfrsUssdPaymentView" style="display: none; background: #f1f5f9; padding: 0.85rem; border-radius: 6px; font-size: 0.85rem; margin-bottom: 1rem; text-align: center;">
+                <div style="font-weight: 700; font-size: 1.1rem; color: var(--hfrs-blue-primary);">*966*25000*1014#</div>
+                <small style="color: var(--hfrs-text-muted);">Dial the code above on your mobile phone to approve fee payment.</small>
+              </div>
+
+              <div style="margin-top: 1rem;">
+                <button id="hfrsModalPayConfirmBtn" class="hfrs-btn hfrs-btn-success" style="width: 100%; padding: 0.75rem; font-size: 0.95rem;">
+                  Complete Payment (₦25,000.00)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <script>
+          function openHfrsPaymentModal() {
+            document.getElementById('hfrsPaymentGatewayModal').style.display = 'flex';
+          }
+          function closeHfrsPaymentModal() {
+            document.getElementById('hfrsPaymentGatewayModal').style.display = 'none';
+          }
+          function switchPaymentMethod(method) {
+            document.getElementById('hfrsCardPaymentView').style.display = method === 'card' ? 'block' : 'none';
+            document.getElementById('hfrsBankPaymentView').style.display = method === 'bank' ? 'block' : 'none';
+            document.getElementById('hfrsUssdPaymentView').style.display = method === 'ussd' ? 'block' : 'none';
+            
+            document.getElementById('payTabCard').className = method === 'card' ? 'hfrs-btn hfrs-btn-primary' : 'hfrs-btn hfrs-btn-outline';
+            document.getElementById('payTabBank').className = method === 'bank' ? 'hfrs-btn hfrs-btn-primary' : 'hfrs-btn hfrs-btn-outline';
+            document.getElementById('payTabUssd').className = method === 'ussd' ? 'hfrs-btn hfrs-btn-primary' : 'hfrs-btn hfrs-btn-outline';
+          }
+        </script>
       <% } %>
 
       <!-- STEP 3: Document Uploads -->
@@ -188,6 +272,7 @@
                   <option value="admission_letter">UNICROSS / JAMB Admission Letter (Required)</option>
                   <option value="birth_certificate">Birth Certificate / Age Declaration</option>
                   <option value="lga_cert">Local Government Identification Letter</option>
+                  <option value="passport_photo">Passport Photograph (Recent Red/White BG)</option>
                 </select>
               </div>
 

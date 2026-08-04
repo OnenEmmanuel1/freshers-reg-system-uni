@@ -584,32 +584,37 @@ body {
   margin-top: 0.2rem;
 }
 
-/* ACTIVE SECTION STYLING: BLUE COLOR */
+/* ACTIVE SECTION STYLING: VIBRANT ROYAL BLUE COLOR */
 .hfrs-top-step.active .hfrs-top-step-node {
-  background-color: #0066FF; /* BLUE node */
+  background-color: #0066FF; /* Vibrant Royal Blue node */
   color: #ffffff;
   border-color: #0066FF;
-  box-shadow: 0 0 0 3px #93c5fd;
+  box-shadow: 0 0 0 4px #93c5fd;
 }
 
 .hfrs-top-step.active .hfrs-top-step-title {
-  color: #0066FF !important; /* BLUE text when active section */
+  color: #0066FF !important; /* Bold Royal Blue for active section */
   font-weight: 700;
 }
 
 .hfrs-top-step.active .hfrs-top-step-desc {
-  color: #0066FF !important; /* BLUE subtext when active section */
+  color: #0066FF !important;
 }
 
-/* COMPLETED SECTION STYLING */
-.hfrs-top-step.completed .hfrs-top-step-node {
-  background-color: #16a34a;
+/* COMPLETED SECTION STYLING: STEEL/SKY BLUE WITH DARK SLATE TEXT */
+.hfrs-top-step.completed:not(.active) .hfrs-top-step-node {
+  background-color: #0284c7; /* Solid Sky Blue for Completed Steps */
   color: #ffffff;
-  border-color: #16a34a;
+  border-color: #0284c7;
 }
 
-.hfrs-top-step.completed .hfrs-top-step-title {
-  color: #16a34a;
+.hfrs-top-step.completed:not(.active) .hfrs-top-step-title {
+  color: #0f172a !important; /* Dark Slate Title for Completed Steps */
+  font-weight: 700;
+}
+
+.hfrs-top-step.completed:not(.active) .hfrs-top-step-desc {
+  color: #475569 !important;
 }
 
 /* Data Table */
