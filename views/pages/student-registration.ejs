@@ -1,0 +1,302 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="hfrs-layout">
+  <div class="hfrs-main-wrapper">
+    <%- include('../partials/sidebar') %>
+
+    <main class="hfrs-content-area">
+      <!-- Top Horizontal Progress Tracking Stepper (Moved to Top) -->
+      <div class="hfrs-top-stepper-card">
+        <div class="hfrs-top-stepper-header">Registration Progress</div>
+
+        <div class="hfrs-top-stepper">
+          <a href="/student/registration?step=1" class="hfrs-top-step <%= currentStep === 1 ? 'active' : '' %> <%= profile && profile.phone ? 'completed' : '' %>">
+            <div class="hfrs-top-step-node">1</div>
+            <div class="hfrs-top-step-title">Data Diri (Bio-Data)</div>
+            <div class="hfrs-top-step-desc">Personal & Academic Info</div>
+          </a>
+
+          <a href="/student/registration?step=2" class="hfrs-top-step <%= currentStep === 2 ? 'active' : '' %> <%= payment ? 'completed' : '' %>">
+            <div class="hfrs-top-step-node">2</div>
+            <div class="hfrs-top-step-title">Fee & Payment Tracking</div>
+            <div class="hfrs-top-step-desc">Acceptance Fee (₦25,000)</div>
+          </a>
+
+          <a href="/student/registration?step=3" class="hfrs-top-step <%= currentStep === 3 ? 'active' : '' %> <%= documents.length >= 2 ? 'completed' : '' %>">
+            <div class="hfrs-top-step-node">3</div>
+            <div class="hfrs-top-step-title">Academic Credentials</div>
+            <div class="hfrs-top-step-desc">O-Level & Admission Letter</div>
+          </a>
+
+          <a href="/student/registration?step=4" class="hfrs-top-step <%= currentStep === 4 ? 'active' : '' %> <%= registration && registration.status === 'pending_verification' ? 'completed' : '' %>">
+            <div class="hfrs-top-step-node">4</div>
+            <div class="hfrs-top-step-title">Final Verification Submit</div>
+            <div class="hfrs-top-step-desc">Submit for Admin Review</div>
+          </a>
+        </div>
+      </div>
+
+      <div id="hfrsStudentAlert" class="hfrs-alert hfrs-alert-danger" style="display: none;"></div>
+
+      <!-- STEP 1: Personal & Bio-Data Form -->
+      <% if (currentStep === 1) { %>
+        <div class="hfrs-card">
+          <div class="hfrs-card-header">
+            <h2 class="hfrs-card-title">Step 1: Bio-Data (Data Diri) & Academic Profile</h2>
+          </div>
+
+          <form id="hfrsProfileForm">
+            <div class="row">
+              <div class="col-md-6 hfrs-form-group">
+                <label for="application_number" class="hfrs-label">Application / Matric Number</label>
+                <input type="text" id="application_number" class="hfrs-input" value="<%= profile ? profile.application_number : '' %>" readonly disabled style="background-color: #f1f5f9;">
+              </div>
+
+              <div class="col-md-6 hfrs-form-group">
+                <label for="date_of_birth" class="hfrs-label hfrs-label-required">Date of Birth (Tanggal Lahir)</label>
+                <input type="date" id="date_of_birth" name="date_of_birth" class="hfrs-input" value="<%= profile && profile.date_of_birth ? new Date(profile.date_of_birth).toISOString().split('T')[0] : '' %>" required>
+              </div>
+
+              <div class="col-md-6 hfrs-form-group">
+                <label for="gender" class="hfrs-label hfrs-label-required">Gender (Jenis Kelamin)</label>
+                <select id="gender" name="gender" class="hfrs-select" required>
+                  <option value="Male" <%= profile && profile.gender === 'Male' ? 'selected' : '' %>>Male</option>
+                  <option value="Female" <%= profile && profile.gender === 'Female' ? 'selected' : '' %>>Female</option>
+                </select>
+              </div>
+
+              <div class="col-md-6 hfrs-form-group">
+                <label for="phone" class="hfrs-label hfrs-label-required">Active Phone Number (No Telepon)</label>
+                <input type="tel" id="phone" name="phone" class="hfrs-input" placeholder="e.g. 08031234567" value="<%= profile ? profile.phone : '' %>" required>
+              </div>
+
+              <div class="col-md-6 hfrs-form-group">
+                <label for="faculty" class="hfrs-label hfrs-label-required">Faculty</label>
+                <select id="faculty" name="faculty" class="hfrs-select" required>
+                  <option value="">Select Faculty...</option>
+                  <option value="Engineering" <%= profile && profile.faculty === 'Engineering' ? 'selected' : '' %>>Engineering</option>
+                  <option value="Physical Sciences" <%= profile && profile.faculty === 'Physical Sciences' ? 'selected' : '' %>>Physical Sciences</option>
+                  <option value="Biological Sciences" <%= profile && profile.faculty === 'Biological Sciences' ? 'selected' : '' %>>Biological Sciences</option>
+                  <option value="Management Sciences" <%= profile && profile.faculty === 'Management Sciences' ? 'selected' : '' %>>Management Sciences</option>
+                  <option value="Environmental Sciences" <%= profile && profile.faculty === 'Environmental Sciences' ? 'selected' : '' %>>Environmental Sciences</option>
+                  <option value="Education" <%= profile && profile.faculty === 'Education' ? 'selected' : '' %>>Education</option>
+                </select>
+              </div>
+
+              <div class="col-md-6 hfrs-form-group">
+                <label for="department" class="hfrs-label hfrs-label-required">Department</label>
+                <input type="text" id="department" name="department" class="hfrs-input" placeholder="e.g. Computer Science" value="<%= profile ? profile.department : '' %>" required>
+              </div>
+
+              <div class="col-md-6 hfrs-form-group">
+                <label for="state_of_origin" class="hfrs-label hfrs-label-required">State of Origin</label>
+                <input type="text" id="state_of_origin" name="state_of_origin" class="hfrs-input" placeholder="e.g. Cross River" value="<%= profile ? profile.state_of_origin : '' %>" required>
+              </div>
+
+              <div class="col-md-6 hfrs-form-group">
+                <label for="lga" class="hfrs-label hfrs-label-required">L.G.A. of Origin</label>
+                <input type="text" id="lga" name="lga" class="hfrs-input" placeholder="e.g. Calabar Municipal" value="<%= profile ? profile.lga : '' %>" required>
+              </div>
+
+              <div class="col-12 hfrs-form-group">
+                <label for="address" class="hfrs-label hfrs-label-required">Residential Address (Data Alamat)</label>
+                <textarea id="address" name="address" class="hfrs-textarea" rows="2" placeholder="Full residential street address" required><%= profile ? profile.address : '' %></textarea>
+              </div>
+
+              <div class="col-md-6 hfrs-form-group">
+                <label for="next_of_kin_name" class="hfrs-label hfrs-label-required">Next of Kin Full Name</label>
+                <input type="text" id="next_of_kin_name" name="next_of_kin_name" class="hfrs-input" placeholder="e.g. Parent / Guardian Name" value="<%= profile ? profile.next_of_kin_name : '' %>" required>
+              </div>
+
+              <div class="col-md-6 hfrs-form-group">
+                <label for="next_of_kin_phone" class="hfrs-label hfrs-label-required">Next of Kin Phone Number</label>
+                <input type="tel" id="next_of_kin_phone" name="next_of_kin_phone" class="hfrs-input" placeholder="e.g. 08039876543" value="<%= profile ? profile.next_of_kin_phone : '' %>" required>
+              </div>
+            </div>
+
+            <div style="text-align: right; margin-top: 1rem;">
+              <button type="submit" class="hfrs-btn hfrs-btn-primary">
+                Save Bio-Data & Continue &rarr;
+              </button>
+            </div>
+          </form>
+        </div>
+      <% } %>
+
+      <!-- STEP 2: Payment Step -->
+      <% if (currentStep === 2) { %>
+        <div class="hfrs-card">
+          <div class="hfrs-card-header">
+            <h2 class="hfrs-card-title">Step 2: Acceptance & Registration Fee Payment Tracking</h2>
+          </div>
+
+          <div class="hfrs-alert hfrs-alert-info">
+            <div>
+              <strong>Payment Tracking System:</strong> Records and tracks your acceptance and registration fee payments for administrative verification.
+            </div>
+          </div>
+
+          <div style="background-color: #f1f5f9; padding: 1.5rem; border-radius: var(--hfrs-radius); margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem;">
+              <span>Fee Description:</span>
+              <span>UNICROSS Freshers Acceptance & Registration Fee</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 1.3rem; font-weight: 800; color: var(--hfrs-blue-primary);">
+              <span>Total Amount Payable:</span>
+              <span>₦25,000.00</span>
+            </div>
+          </div>
+
+          <% if (payment) { %>
+            <div class="hfrs-alert hfrs-alert-success">
+              <div>
+                <strong>Payment Tracked Successfully!</strong><br>
+                Payment Reference: <code><%= payment.reference_encrypted %></code><br>
+                Amount Paid: ₦<%= parseFloat(payment.amount).toLocaleString('en-US', {minimumFractionDigits: 2}) %><br>
+                Verification Status: <span class="hfrs-badge <%= payment.status === 'confirmed' ? 'hfrs-badge-approved' : 'hfrs-badge-pending' %>"><%= payment.status.toUpperCase() %></span>
+              </div>
+            </div>
+            <div style="text-align: right; margin-top: 1rem;">
+              <a href="/student/registration?step=3" class="hfrs-btn hfrs-btn-primary">Proceed to Step 3: Document Uploads &rarr;</a>
+            </div>
+          <% } else { %>
+            <button id="hfrsPayBtn" class="hfrs-btn hfrs-btn-success" style="width: 100%; padding: 0.85rem; font-size: 1.05rem;">
+              Pay Acceptance & Registration Fee (₦25,000) [Simulated Flow]
+            </button>
+          <% } %>
+        </div>
+      <% } %>
+
+      <!-- STEP 3: Document Uploads -->
+      <% if (currentStep === 3) { %>
+        <div class="hfrs-card">
+          <div class="hfrs-card-header">
+            <h2 class="hfrs-card-title">Step 3: Upload Academic Credentials</h2>
+          </div>
+
+          <p style="color: var(--hfrs-text-secondary); margin-bottom: 1rem;">
+            Please upload clear copies of your required academic documents (Max file size: 5MB per document. Formats: PDF, JPG, PNG).
+          </p>
+
+          <form id="hfrsDocUploadForm" class="mb-4">
+            <div class="row">
+              <div class="col-md-5 hfrs-form-group">
+                <label for="document_type" class="hfrs-label hfrs-label-required">Document Type</label>
+                <select id="document_type" name="document_type" class="hfrs-select" required>
+                  <option value="o_level">O-Level Statement of Result (Required)</option>
+                  <option value="admission_letter">UNICROSS / JAMB Admission Letter (Required)</option>
+                  <option value="birth_certificate">Birth Certificate / Age Declaration</option>
+                  <option value="lga_cert">Local Government Identification Letter</option>
+                </select>
+              </div>
+
+              <div class="col-md-5 hfrs-form-group">
+                <label for="documentFile" class="hfrs-label hfrs-label-required">Select File</label>
+                <input type="file" id="documentFile" name="documentFile" class="hfrs-input" accept=".pdf,.jpg,.jpeg,.png" required>
+              </div>
+
+              <div class="col-md-2 hfrs-form-group" style="display: flex; align-items: flex-end;">
+                <button type="submit" class="hfrs-btn hfrs-btn-primary" style="width: 100%;">Upload</button>
+              </div>
+            </div>
+          </form>
+
+          <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 0.75rem;">Uploaded Documents List</h3>
+          <div class="hfrs-table-responsive">
+            <table class="hfrs-table">
+              <thead>
+                <tr>
+                  <th>Document Type</th>
+                  <th>Filename</th>
+                  <th>File Size</th>
+                  <th>Upload Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (documents && documents.length > 0) { %>
+                  <% documents.forEach(doc => { %>
+                    <tr>
+                      <td style="font-weight: 600; text-transform: uppercase;"><%= doc.document_type.replace('_', ' ') %></td>
+                      <td><%= doc.filename %></td>
+                      <td><%= (doc.file_size / 1024).toFixed(1) %> KB</td>
+                      <td><%= new Date(doc.uploaded_at).toLocaleString() %></td>
+                      <td>
+                        <a href="<%= doc.storage_path %>" target="_blank" class="hfrs-btn hfrs-btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">View File</a>
+                      </td>
+                    </tr>
+                  <% }) %>
+                <% } else { %>
+                  <tr>
+                    <td colspan="5" style="text-align: center; color: var(--hfrs-text-muted);">No documents uploaded yet. Please upload required credentials above.</td>
+                  </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="text-align: right; margin-top: 1.5rem;">
+            <a href="/student/registration?step=4" class="hfrs-btn hfrs-btn-primary">Proceed to Step 4: Final Submission &rarr;</a>
+          </div>
+        </div>
+      <% } %>
+
+      <!-- STEP 4: Final Submission & Real-time Verification Tracking -->
+      <% if (currentStep === 4) { %>
+        <div class="hfrs-card">
+          <div class="hfrs-card-header">
+            <h2 class="hfrs-card-title">Step 4: Final Verification Submission</h2>
+          </div>
+
+          <div class="hfrs-alert hfrs-alert-warning">
+            <div>
+              <strong>Final Check Before Submission:</strong><br>
+              Ensure all your personal details, payment records, and uploaded academic documents are complete and accurate. Submitting will send your application directly to the UNICROSS Administrative Verification Queue.
+            </div>
+          </div>
+
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <div style="background:#ffffff; border:1px solid var(--hfrs-border-color); padding:1rem; border-radius: var(--hfrs-radius);">
+                <h4 style="font-size: 0.95rem; font-weight:700; color: var(--hfrs-navy-dark);">Profile Bio-Data</h4>
+                <p style="font-size:0.85rem; margin-bottom:0;">
+                  Name: <%= user.name %><br>
+                  Faculty: <%= profile ? profile.faculty : 'Not filled' %><br>
+                  Department: <%= profile ? profile.department : 'Not filled' %>
+                </p>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div style="background:#ffffff; border:1px solid var(--hfrs-border-color); padding:1rem; border-radius: var(--hfrs-radius);">
+                <h4 style="font-size: 0.95rem; font-weight:700; color: var(--hfrs-navy-dark);">Payment & Documents</h4>
+                <p style="font-size:0.85rem; margin-bottom:0;">
+                  Payment Status: <strong style="color: var(--hfrs-accent-green);"><%= payment ? payment.status.toUpperCase() : 'UNPAID' %></strong><br>
+                  Uploaded Documents: <%= documents.length %> files
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <% if (registration && registration.status === 'pending_verification') { %>
+            <div class="hfrs-alert hfrs-alert-success">
+              <div>
+                <strong>Application Successfully Submitted!</strong><br>
+                Your application is currently in status: <strong>PENDING_VERIFICATION</strong>. Administrative officers are reviewing your documents.
+              </div>
+            </div>
+            <a href="/student/status" class="hfrs-btn hfrs-btn-primary">Track Real-Time Status &rarr;</a>
+          <% } else { %>
+            <button id="hfrsFinalSubmitBtn" class="hfrs-btn hfrs-btn-success" style="width: 100%; padding: 0.85rem; font-size: 1.05rem;">
+              Submit Application for Administrative Verification
+            </button>
+          <% } %>
+        </div>
+      <% } %>
+    </main>
+  </div>
+</div>
+
+<script src="/js/student.js"></script>
+<%- include('../partials/footer') %>

@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: unicross_hfrs_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: unicross_freshers_reg_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./schema.sql:/docker-entrypoint-initdb.d/1_schema.sql
+      - ./seed.sql:/docker-entrypoint-initdb.d/2_seed.sql
+
+  app:
+    build: .
+    container_name: unicross_hfrs_app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      NODE_ENV: production
+      SESSION_SECRET: unicross_hfrs_secret_key_2026_super_secure
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: rootpassword
+      DB_NAME: unicross_freshers_reg_db
+      DB_PORT: 3306
+    depends_on:
+      - db
+    volumes:
+      - uploads_data:/usr/src/app/uploads
+
+volumes:
+  db_data:
+  uploads_data:

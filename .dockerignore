@@ -1,0 +1,9 @@
+# Docker build ignore rules
+node_modules
+npm-debug.log
+.env
+.git
+.gitignore
+README.md
+uploads/*
+!uploads/.gitkeep

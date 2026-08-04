@@ -1,0 +1,207 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="hfrs-layout">
+  <div class="hfrs-main-wrapper">
+    <%- include('../partials/sidebar') %>
+
+    <main class="hfrs-content-area">
+      <div class="hfrs-card mb-4">
+        <div class="hfrs-card-header mb-0 border-0 pb-0">
+          <div>
+            <h1 class="hfrs-card-title" style="font-size: 1.4rem;">Real-Time Status & Payment Tracking</h1>
+            <p style="color: var(--hfrs-text-muted); font-size: 0.85rem;">Live tracking timeline for your UNICROSS fresher registration lifecycle.</p>
+          </div>
+          <div>
+            <% 
+              let statusBadgeClass = 'hfrs-badge-draft';
+              let statusLabel = 'DRAFT INCOMPLETE';
+              if (registration) {
+                if (registration.status === 'pending_verification') { statusBadgeClass = 'hfrs-badge-pending'; statusLabel = 'PENDING VERIFICATION'; }
+                else if (registration.status === 'approved') { statusBadgeClass = 'hfrs-badge-approved'; statusLabel = 'APPROVED'; }
+                else if (registration.status === 'rejected') { statusBadgeClass = 'hfrs-badge-rejected'; statusLabel = 'REJECTED'; }
+              }
+            %>
+            <span id="hfrsLiveStatusBadge" class="hfrs-badge <%= statusBadgeClass %>" style="font-size: 0.95rem; padding: 0.5rem 1rem;">
+              <span>●</span> <%= statusLabel %>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- Left Column: Vertical Stepper Payment & Verification Timeline -->
+        <div class="col-lg-4 col-md-5 mb-4">
+          <div class="hfrs-v-stepper-card">
+            <div style="font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--hfrs-text-muted); margin-bottom: 1.5rem;">
+              Live Verification Timeline
+            </div>
+
+            <div class="hfrs-v-stepper">
+              <!-- Node 1: Account Creation & Bio Data -->
+              <div class="hfrs-v-step <%= profile && profile.phone ? 'completed' : 'active' %>">
+                <div class="hfrs-v-step-node">1</div>
+                <div class="hfrs-v-step-content">
+                  <div class="hfrs-v-step-title">1. Account & Bio-Data (Data Diri)</div>
+                  <div class="hfrs-v-step-desc">
+                    <%= profile && profile.phone ? 'Completed & Saved' : 'Incomplete Profile' %>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Node 2: Fee Payment & Reference Tracking -->
+              <% 
+                let pmtClass = '';
+                let pmtDesc = 'Not Paid (₦25,000)';
+                if (payment) {
+                  if (payment.status === 'confirmed') {
+                    pmtClass = 'completed';
+                    pmtDesc = 'Payment Confirmed by Admin';
+                  } else {
+                    pmtClass = 'pending-review';
+                    pmtDesc = 'Payment Recorded (Pending Admin Confirmation)';
+                  }
+                }
+              %>
+              <div class="hfrs-v-step <%= pmtClass %>">
+                <div class="hfrs-v-step-node">2</div>
+                <div class="hfrs-v-step-content">
+                  <div class="hfrs-v-step-title">2. Fee Payment & Tracking</div>
+                  <div class="hfrs-v-step-desc"><%= pmtDesc %></div>
+                  <% if (payment) { %>
+                    <small style="font-family: monospace; font-size: 0.75rem; color: var(--hfrs-navy-primary); font-weight: 600; display: block; margin-top: 2px;">
+                      Ref: <%= payment.reference_encrypted %>
+                    </small>
+                  <% } %>
+                </div>
+              </div>
+
+              <!-- Node 3: Academic Credentials -->
+              <% 
+                let docClass = '';
+                let docDesc = 'Upload Required Files';
+                if (documents && documents.length >= 2) {
+                  docClass = 'completed';
+                  docDesc = `${documents.length} Files Uploaded`;
+                } else if (documents && documents.length > 0) {
+                  docClass = 'pending-review';
+                  docDesc = `${documents.length} File Uploaded (More needed)`;
+                }
+              %>
+              <div class="hfrs-v-step <%= docClass %>">
+                <div class="hfrs-v-step-node">3</div>
+                <div class="hfrs-v-step-content">
+                  <div class="hfrs-v-step-title">3. Academic Credentials</div>
+                  <div class="hfrs-v-step-desc"><%= docDesc %></div>
+                </div>
+              </div>
+
+              <!-- Node 4: Administrative Verification & Approval -->
+              <% 
+                let verifClass = '';
+                let verifDesc = 'Awaiting Final Submission';
+                if (registration) {
+                  if (registration.status === 'approved') {
+                    verifClass = 'completed';
+                    verifDesc = 'Officially Approved & Enrolled';
+                  } else if (registration.status === 'rejected') {
+                    verifClass = 'rejected';
+                    verifDesc = 'Application Rejected';
+                  } else if (registration.status === 'pending_verification') {
+                    verifClass = 'pending-review';
+                    verifDesc = 'In Administrative Queue';
+                  }
+                }
+              %>
+              <div class="hfrs-v-step <%= verifClass %>">
+                <div class="hfrs-v-step-node">4</div>
+                <div class="hfrs-v-step-content">
+                  <div class="hfrs-v-step-title">4. Registry Verification</div>
+                  <div class="hfrs-v-step-desc"><%= verifDesc %></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Status Banner & Detailed Summary -->
+        <div class="col-lg-8 col-md-7">
+          <div class="hfrs-card">
+            <h2 class="hfrs-card-title mb-3">Current Verification Status Notice</h2>
+
+            <% if (registration && registration.status === 'approved') { %>
+              <div class="hfrs-alert hfrs-alert-success" style="padding: 1.5rem;">
+                <div>
+                  <h3 style="font-weight: 700; margin-bottom: 0.5rem;">🎉 Congratulations! Registration Approved</h3>
+                  <p>Your registration profile, payment records, and uploaded academic documents have been fully verified and approved by the UNICROSS Administrative Verification Panel.</p>
+                  <p style="margin-top: 0.75rem;">
+                    Approval Timestamp: <strong><%= new Date(registration.reviewed_at).toLocaleString() %></strong><br>
+                    Status: <strong>OFFICIALLY ENROLLED FRESHER</strong>
+                  </p>
+                </div>
+              </div>
+            <% } else if (registration && registration.status === 'rejected') { %>
+              <div class="hfrs-alert hfrs-alert-danger" style="padding: 1.5rem;">
+                <div>
+                  <h3 style="font-weight: 700; margin-bottom: 0.5rem;">Registration Application Rejected</h3>
+                  <p><strong>Reason specified by verification officer:</strong></p>
+                  <div style="background:#ffffff; border:1px solid #fca5a5; padding:0.75rem; border-radius:4px; margin: 0.5rem 0; font-style: italic; color:#b91c1c;">
+                    "<%= registration.rejection_reason || 'Missing or unclear academic documents.' %>"
+                  </div>
+                  <p>Please update your credentials and re-submit your application for re-evaluation.</p>
+                  <a href="/student/registration?step=1" class="hfrs-btn hfrs-btn-primary" style="margin-top: 0.5rem;">Update & Resubmit Registration</a>
+                </div>
+              </div>
+            <% } else if (registration && registration.status === 'pending_verification') { %>
+              <div class="hfrs-alert hfrs-alert-warning" style="padding: 1.5rem;">
+                <div>
+                  <h3 style="font-weight: 700; margin-bottom: 0.5rem;">⏳ Under Administrative Verification</h3>
+                  <p>Your submitted credentials and payment records are currently queued for verification by the UNICROSS Registry. This status updates automatically upon admin review.</p>
+                  <p style="font-size:0.85rem; margin-top:0.5rem; color:var(--hfrs-text-muted);">Submitted at: <%= new Date(registration.submitted_at).toLocaleString() %></p>
+                </div>
+              </div>
+            <% } else { %>
+              <div class="hfrs-alert hfrs-alert-info">
+                <div>
+                  <strong>Draft Mode:</strong> Your registration form has not been submitted yet. Please complete all steps in the wizard.
+                </div>
+              </div>
+              <a href="/student/registration?step=1" class="hfrs-btn hfrs-btn-primary">Go to Registration Wizard</a>
+            <% } %>
+          </div>
+
+          <!-- Payment & Audit Details -->
+          <div class="hfrs-card">
+            <div class="hfrs-card-header">
+              <h2 class="hfrs-card-title">Detailed Payment & Record Audit</h2>
+            </div>
+            <div class="row" style="font-size: 0.9rem;">
+              <div class="col-md-6 mb-3">
+                <p><strong>Student Name:</strong> <%= user.name %></p>
+                <p><strong>Application Number:</strong> <%= profile ? profile.application_number : 'N/A' %></p>
+                <p><strong>Faculty:</strong> <%= profile ? profile.faculty : 'N/A' %></p>
+                <p><strong>Department:</strong> <%= profile ? profile.department : 'N/A' %></p>
+              </div>
+              <div class="col-md-6 mb-3">
+                <p><strong>Payment Status:</strong> 
+                  <% if (payment) { %>
+                    <span class="hfrs-badge <%= payment.status === 'confirmed' ? 'hfrs-badge-approved' : 'hfrs-badge-pending' %>">
+                      <%= payment.status.toUpperCase() %>
+                    </span>
+                  <% } else { %>
+                    <span class="hfrs-badge hfrs-badge-draft">UNPAID</span>
+                  <% } %>
+                </p>
+                <p><strong>Payment Reference:</strong> <code><%= payment ? payment.reference_encrypted : 'N/A' %></code></p>
+                <p><strong>Uploaded Files Count:</strong> <%= documents.length %> uploaded</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="/js/student.js"></script>
+<%- include('../partials/footer') %>

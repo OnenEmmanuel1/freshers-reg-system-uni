@@ -1,0 +1,48 @@
+<%- include('../partials/header') %>
+
+<div class="hfrs-auth-container">
+  <div class="hfrs-auth-card">
+    <div class="hfrs-auth-brand">
+      <div style="width:48px; height:48px; background-color: var(--hfrs-navy-primary); border-radius: 6px; margin:0 auto 0.75rem auto; display:flex; align-items:center; justify-content:center; font-weight:800; color:#fff; font-size:1.6rem;">U</div>
+      <h1 class="hfrs-auth-title">Fresher Account Registration</h1>
+      <p class="hfrs-auth-subtitle">Create your UNICROSS student registration account</p>
+    </div>
+
+    <div id="hfrsAuthAlert" class="hfrs-alert hfrs-alert-danger" style="display: <%= typeof error !== 'undefined' && error ? 'block' : 'none' %>;">
+      <span><%= typeof error !== 'undefined' ? error : '' %></span>
+    </div>
+
+    <form id="hfrsSignupForm">
+      <div class="hfrs-form-group">
+        <label for="name" class="hfrs-label hfrs-label-required">Full Legal Name (as in JAMB/Admission)</label>
+        <input type="text" id="name" name="name" class="hfrs-input" placeholder="e.g. John Okon Doe" required autofocus>
+      </div>
+
+      <div class="hfrs-form-group">
+        <label for="email" class="hfrs-label hfrs-label-required">Valid Email Address</label>
+        <input type="email" id="email" name="email" class="hfrs-input" placeholder="e.g. john.doe@student.unicross.edu.ng" required>
+      </div>
+
+      <div class="hfrs-form-group">
+        <label for="password" class="hfrs-label hfrs-label-required">Create Password</label>
+        <input type="password" id="password" name="password" class="hfrs-input" placeholder="At least 6 characters" required>
+      </div>
+
+      <div class="hfrs-form-group">
+        <label for="confirmPassword" class="hfrs-label hfrs-label-required">Confirm Password</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" class="hfrs-input" placeholder="Re-enter password" required>
+      </div>
+
+      <button type="submit" class="hfrs-btn hfrs-btn-primary" style="width: 100%; margin-top: 0.5rem; padding: 0.75rem;">
+        Create Account & Begin Registration
+      </button>
+    </form>
+
+    <div style="margin-top: 1.5rem; text-align: center; font-size: 0.85rem; color: var(--hfrs-text-muted);">
+      Already have an account? <a href="/auth/login" style="color: var(--hfrs-navy-primary); font-weight: 600;">Log in here</a>
+    </div>
+  </div>
+</div>
+
+<script src="/js/auth.js"></script>
+<%- include('../partials/footer') %>

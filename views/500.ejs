@@ -1,0 +1,15 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<div class="hfrs-layout">
+  <div class="hfrs-main-wrapper">
+    <div class="hfrs-content-area" style="text-align: center; padding: 4rem 1rem;">
+      <h1 style="font-size: 3rem; color: var(--hfrs-accent-red); font-weight: 800;">500</h1>
+      <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">System Error</h2>
+      <p style="color: var(--hfrs-text-muted); margin-bottom: 2rem;"><%= typeof error !== 'undefined' ? error : 'An unexpected error occurred while processing your request.' %></p>
+      <a href="/" class="hfrs-btn hfrs-btn-primary">Return to Safety</a>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,270 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="hfrs-layout">
+  <div class="hfrs-main-wrapper">
+    <%- include('../partials/sidebar') %>
+
+    <main class="hfrs-content-area">
+      <div class="hfrs-card mb-4">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <a href="/admin/dashboard" style="color: var(--hfrs-navy-primary); font-weight: 600; text-decoration: none;">&larr; Back to Dashboard Queue</a>
+            <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--hfrs-navy-dark); margin-top: 0.25rem;">
+              Application Verification: <%= application.student_name %>
+            </h1>
+            <p style="color: var(--hfrs-text-secondary); font-size: 0.85rem;">
+              Application Number: <strong><%= application.application_number %></strong> | Email: <%= application.student_email %>
+            </p>
+          </div>
+          <div>
+            <% 
+              let badgeClass = 'hfrs-badge-pending';
+              if (application.registration_status === 'approved') badgeClass = 'hfrs-badge-approved';
+              if (application.registration_status === 'rejected') badgeClass = 'hfrs-badge-rejected';
+            %>
+            <span class="hfrs-badge <%= badgeClass %>" style="font-size: 1rem; padding: 0.5rem 1rem;">
+              <%= application.registration_status.toUpperCase() %>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div id="hfrsAdminAlert" class="hfrs-alert hfrs-alert-danger" style="display: none;"></div>
+
+      <div class="row">
+        <!-- Left Column: Vertical Progress Audit Tracker -->
+        <div class="col-lg-3 col-md-4 mb-4">
+          <div class="hfrs-v-stepper-card">
+            <div style="font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--hfrs-text-muted); margin-bottom: 1.5rem;">
+              Verification Audit Steps
+            </div>
+
+            <div class="hfrs-v-stepper">
+              <!-- Step 1: Bio-Data -->
+              <div class="hfrs-v-step completed">
+                <div class="hfrs-v-step-node">1</div>
+                <div class="hfrs-v-step-content">
+                  <div class="hfrs-v-step-title">1. Bio-Data Record</div>
+                  <div class="hfrs-v-step-desc">Profile Form Complete</div>
+                </div>
+              </div>
+
+              <!-- Step 2: Payment Gate -->
+              <% 
+                let pmtGateClass = application.payment_status === 'confirmed' ? 'completed' : 'pending-review';
+              %>
+              <div class="hfrs-v-step <%= pmtGateClass %>">
+                <div class="hfrs-v-step-node">2</div>
+                <div class="hfrs-v-step-content">
+                  <div class="hfrs-v-step-title">2. Payment Verification</div>
+                  <div class="hfrs-v-step-desc">
+                    <%= application.payment_status === 'confirmed' ? 'Payment Verified' : 'Action Required' %>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 3: Documents Audit -->
+              <% 
+                let docAuditClass = documents && documents.length >= 2 ? 'completed' : 'pending-review';
+              %>
+              <div class="hfrs-v-step <%= docAuditClass %>">
+                <div class="hfrs-v-step-node">3</div>
+                <div class="hfrs-v-step-content">
+                  <div class="hfrs-v-step-title">3. Documents Review</div>
+                  <div class="hfrs-v-step-desc"><%= documents.length %> Files Attached</div>
+                </div>
+              </div>
+
+              <!-- Step 4: Final Admin Decision -->
+              <% 
+                let decClass = '';
+                if (application.registration_status === 'approved') decClass = 'completed';
+                else if (application.registration_status === 'rejected') decClass = 'rejected';
+                else decClass = 'pending-review';
+              %>
+              <div class="hfrs-v-step <%= decClass %>">
+                <div class="hfrs-v-step-node">4</div>
+                <div class="hfrs-v-step-content">
+                  <div class="hfrs-v-step-title">4. Registry Decision</div>
+                  <div class="hfrs-v-step-desc"><%= application.registration_status.toUpperCase() %></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Verification Details & Action Panels -->
+        <div class="col-lg-9 col-md-8">
+          <div class="row">
+            <!-- Student Bio-Data Column -->
+            <div class="col-md-6 mb-4">
+              <div class="hfrs-card" style="height: 100%;">
+                <div class="hfrs-card-header">
+                  <h2 class="hfrs-card-title">1. Bio-Data & Academic Record</h2>
+                </div>
+                <table class="hfrs-table" style="font-size: 0.85rem;">
+                  <tbody>
+                    <tr>
+                      <th style="width: 40%;">Full Name</th>
+                      <td><%= application.student_name %></td>
+                    </tr>
+                    <tr>
+                      <th>Date of Birth</th>
+                      <td><%= new Date(application.date_of_birth).toLocaleDateString() %></td>
+                    </tr>
+                    <tr>
+                      <th>Gender</th>
+                      <td><%= application.gender %></td>
+                    </tr>
+                    <tr>
+                      <th>Phone Number</th>
+                      <td><%= application.phone %></td>
+                    </tr>
+                    <tr>
+                      <th>Faculty</th>
+                      <td><%= application.faculty %></td>
+                    </tr>
+                    <tr>
+                      <th>Department</th>
+                      <td><%= application.department %></td>
+                    </tr>
+                    <tr>
+                      <th>State of Origin / LGA</th>
+                      <td><%= application.state_of_origin %> / <%= application.lga %></td>
+                    </tr>
+                    <tr>
+                      <th>Residential Address</th>
+                      <td><%= application.address %></td>
+                    </tr>
+                    <tr>
+                      <th>Next of Kin</th>
+                      <td><%= application.next_of_kin_name %> (<%= application.next_of_kin_phone %>)</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Payment Verification & Actions Column -->
+            <div class="col-md-6 mb-4">
+              <div class="hfrs-card" style="height: 100%;">
+                <div class="hfrs-card-header">
+                  <h2 class="hfrs-card-title">2. Payment Verification Gate</h2>
+                </div>
+
+                <div style="background-color: #f8fafc; border: 1px solid var(--hfrs-border-color); padding: 1.25rem; border-radius: var(--hfrs-radius); margin-bottom: 1.25rem;">
+                  <p><strong>Payment Status:</strong> 
+                    <% if (application.payment_status === 'confirmed') { %>
+                      <span class="hfrs-badge hfrs-badge-approved">CONFIRMED</span>
+                    <% } else if (application.payment_status === 'pending') { %>
+                      <span class="hfrs-badge hfrs-badge-pending">PENDING VERIFICATION</span>
+                    <% } else { %>
+                      <span class="hfrs-badge hfrs-badge-draft">UNPAID</span>
+                    <% } %>
+                  </p>
+                  <p><strong>Amount:</strong> ₦<%= application.payment_amount ? parseFloat(application.payment_amount).toLocaleString('en-US', {minimumFractionDigits: 2}) : '25,000.00' %></p>
+                  <p><strong>Payment Reference:</strong> <code><%= application.payment_ref || 'None' %></code></p>
+                  <p><strong>Date Paid:</strong> <%= application.payment_date ? new Date(application.payment_date).toLocaleString() : 'N/A' %></p>
+
+                  <% if (application.payment_status !== 'confirmed') { %>
+                    <button id="hfrsAdminVerifyPaymentBtn" data-reg-id="<%= application.registration_id %>" class="hfrs-btn hfrs-btn-success" style="width: 100%; margin-top: 0.75rem;">
+                      ✓ Verify & Confirm Student Payment
+                    </button>
+                  <% } else { %>
+                    <div class="hfrs-alert hfrs-alert-success" style="margin-top: 0.75rem; margin-bottom:0;">
+                      <span>Payment confirmed on <%= application.payment_confirmed_at ? new Date(application.payment_confirmed_at).toLocaleString() : 'Record' %>. Approval gate unlocked!</span>
+                    </div>
+                  <% } %>
+                </div>
+
+                <div class="hfrs-alert hfrs-alert-info">
+                  <span><strong>Workflow Enforced:</strong> An application cannot be approved unless the payment status is marked as <strong>CONFIRMED</strong> by the admin.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Uploaded Credentials Documents Review -->
+          <div class="hfrs-card">
+            <div class="hfrs-card-header">
+              <h2 class="hfrs-card-title">3. Uploaded Documents Audit</h2>
+            </div>
+
+            <div class="hfrs-table-responsive">
+              <table class="hfrs-table">
+                <thead>
+                  <tr>
+                    <th>Document Type</th>
+                    <th>Original Filename</th>
+                    <th>File Size</th>
+                    <th>Upload Date</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (documents && documents.length > 0) { %>
+                    <% documents.forEach(doc => { %>
+                      <tr>
+                        <td style="font-weight: 700; text-transform: uppercase;"><%= doc.document_type.replace('_', ' ') %></td>
+                        <td><%= doc.filename %></td>
+                        <td><%= (doc.file_size / 1024).toFixed(1) %> KB</td>
+                        <td><%= new Date(doc.uploaded_at).toLocaleString() %></td>
+                        <td>
+                          <a href="<%= doc.storage_path %>" target="_blank" class="hfrs-btn hfrs-btn-primary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+                            📄 Inspect Document
+                          </a>
+                        </td>
+                      </tr>
+                    <% }) %>
+                  <% } else { %>
+                    <tr>
+                      <td colspan="5" style="text-align: center; color: var(--hfrs-text-muted);">No documents uploaded for this registration.</td>
+                    </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Decision & Action Panel -->
+          <div class="hfrs-card" style="border-top: 4px solid var(--hfrs-navy-primary);">
+            <div class="hfrs-card-header">
+              <h2 class="hfrs-card-title">4. Administrative Final Decision</h2>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <div style="padding: 1.25rem; border: 1px solid var(--hfrs-border-color); border-radius: var(--hfrs-radius); background: #ffffff;">
+                  <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--hfrs-accent-green); margin-bottom: 0.5rem;">Approve Registration</h3>
+                  <p style="font-size: 0.85rem; color: var(--hfrs-text-secondary); margin-bottom: 1rem;">
+                    Approving this registration will finalize fresher enrollment and set status to <strong>APPROVED</strong>.
+                  </p>
+                  <button id="hfrsAdminApproveRegBtn" data-reg-id="<%= application.registration_id %>" class="hfrs-btn hfrs-btn-success" style="width: 100%; font-size: 1rem; padding: 0.75rem;">
+                    ✓ Approve Registration Application
+                  </button>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <div style="padding: 1.25rem; border: 1px solid var(--hfrs-border-color); border-radius: var(--hfrs-radius); background: #ffffff;">
+                  <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--hfrs-accent-red); margin-bottom: 0.5rem;">Reject Registration</h3>
+                  <div class="hfrs-form-group mb-2">
+                    <label for="hfrsRejectReason" class="hfrs-label">Rejection Reason / Required Correction</label>
+                    <textarea id="hfrsRejectReason" class="hfrs-textarea" rows="2" placeholder="Specify why application is rejected (e.g. Unclear O-Level result file, wrong department selected)"></textarea>
+                  </div>
+                  <button id="hfrsAdminRejectRegBtn" data-reg-id="<%= application.registration_id %>" class="hfrs-btn hfrs-btn-danger" style="width: 100%; font-size: 1rem; padding: 0.75rem;">
+                    ✗ Reject Registration Application
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="/js/admin.js"></script>
+<%- include('../partials/footer') %>

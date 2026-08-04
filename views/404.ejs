@@ -1,0 +1,15 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<div class="hfrs-layout">
+  <div class="hfrs-main-wrapper">
+    <div class="hfrs-content-area" style="text-align: center; padding: 4rem 1rem;">
+      <h1 style="font-size: 3rem; color: var(--hfrs-navy-dark); font-weight: 800;">404</h1>
+      <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Page Not Found</h2>
+      <p style="color: var(--hfrs-text-muted); margin-bottom: 2rem;"><%= typeof error !== 'undefined' ? error : 'The requested page or resource could not be found.' %></p>
+      <a href="/" class="hfrs-btn hfrs-btn-primary">Return to Homepage</a>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

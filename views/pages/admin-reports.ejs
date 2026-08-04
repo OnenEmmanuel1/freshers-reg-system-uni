@@ -1,0 +1,120 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="hfrs-layout">
+  <div class="hfrs-main-wrapper">
+    <%- include('../partials/sidebar') %>
+
+    <main class="hfrs-content-area">
+      <div class="hfrs-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--hfrs-navy-dark);">
+              Administrative Reports & Analytics Module
+            </h1>
+            <p style="color: var(--hfrs-text-secondary); font-size: 0.85rem;">
+              Registration volume trends, turnaround metrics, and CSV export tools.
+            </p>
+          </div>
+          <div>
+            <a href="/api/reports/csv" class="hfrs-btn hfrs-btn-success">
+              📥 Export Complete CSV Report
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Key Turnaround Analytics -->
+      <div class="hfrs-metric-grid">
+        <div class="hfrs-metric-card" style="border-left: 4px solid var(--hfrs-navy-primary);">
+          <div class="hfrs-metric-label">Average Approval Turnaround</div>
+          <div class="hfrs-metric-value"><%= metrics.avgApprovalHours %> hrs</div>
+          <div class="hfrs-metric-subtext">Submission to Admin Approval time</div>
+        </div>
+
+        <div class="hfrs-metric-card" style="border-left: 4px solid var(--hfrs-accent-green);">
+          <div class="hfrs-metric-label">Total Verified Revenue</div>
+          <div class="hfrs-metric-value" style="font-size: 1.4rem;">₦<%= parseFloat(metrics.totalRevenue || 0).toLocaleString('en-US', {minimumFractionDigits: 2}) %></div>
+          <div class="hfrs-metric-subtext">Confirmed payments in DB</div>
+        </div>
+
+        <div class="hfrs-metric-card" style="border-left: 4px solid var(--hfrs-accent-blue);">
+          <div class="hfrs-metric-label">Total Active Freshers</div>
+          <div class="hfrs-metric-value"><%= metrics.totalStudents %></div>
+          <div class="hfrs-metric-subtext">Registered student accounts</div>
+        </div>
+      </div>
+
+      <!-- Volume Breakdown by Status & Faculty -->
+      <div class="row">
+        <div class="col-md-6 mb-4">
+          <div class="hfrs-card" style="height: 100%;">
+            <div class="hfrs-card-header">
+              <h2 class="hfrs-card-title">Volume by Registration Status</h2>
+            </div>
+            <table class="hfrs-table">
+              <thead>
+                <tr>
+                  <th>Status State</th>
+                  <th>Count</th>
+                  <th>Percentage</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% 
+                  const total = metrics.totalStudents || 1;
+                  const statuses = [
+                    { key: 'approved', label: 'Approved Enrolled', badge: 'hfrs-badge-approved' },
+                    { key: 'pending_verification', label: 'Pending Verification Queue', badge: 'hfrs-badge-pending' },
+                    { key: 'rejected', label: 'Rejected Applications', badge: 'hfrs-badge-rejected' },
+                    { key: 'draft', label: 'Draft Incomplete', badge: 'hfrs-badge-draft' }
+                  ];
+                %>
+                <% statuses.forEach(st => { %>
+                  <% const count = metrics.statusCounts[st.key] || 0; %>
+                  <tr>
+                    <td><span class="hfrs-badge <%= st.badge %>"><%= st.label %></span></td>
+                    <td style="font-weight: 700;"><%= count %></td>
+                    <td><%= Math.round((count / total) * 100) %>%</td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+          <div class="hfrs-card" style="height: 100%;">
+            <div class="hfrs-card-header">
+              <h2 class="hfrs-card-title">Registration Volume by Faculty</h2>
+            </div>
+            <table class="hfrs-table">
+              <thead>
+                <tr>
+                  <th>Faculty Name</th>
+                  <th>Student Registrations</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (metrics.facultyBreakdown && metrics.facultyBreakdown.length > 0) { %>
+                  <% metrics.facultyBreakdown.forEach(f => { %>
+                    <tr>
+                      <td style="font-weight: 600;"><%= f.faculty || 'Unspecified' %></td>
+                      <td style="font-weight: 700;"><%= f.count %></td>
+                    </tr>
+                  <% }) %>
+                <% } else { %>
+                  <tr>
+                    <td colspan="2" style="text-align: center; color: var(--hfrs-text-muted);">No faculty data recorded yet.</td>
+                  </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

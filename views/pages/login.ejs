@@ -1,0 +1,50 @@
+<%- include('../partials/header') %>
+
+<div class="hfrs-auth-container">
+  <div class="hfrs-auth-card">
+    <div class="hfrs-auth-brand">
+      <div style="width:48px; height:48px; background-color: var(--hfrs-navy-primary); border-radius: 6px; margin:0 auto 0.75rem auto; display:flex; align-items:center; justify-content:center; font-weight:800; color:#fff; font-size:1.6rem;">U</div>
+      <h1 class="hfrs-auth-title">UNICROSS UniRegister</h1>
+      <p class="hfrs-auth-subtitle">Unified Freshers Registration System</p>
+    </div>
+
+    <div id="hfrsAuthAlert" class="hfrs-alert hfrs-alert-danger" style="display: <%= typeof error !== 'undefined' && error ? 'block' : 'none' %>;">
+      <span><%= typeof error !== 'undefined' ? error : '' %></span>
+    </div>
+
+    <% if (typeof success !== 'undefined' && success) { %>
+      <div class="hfrs-alert hfrs-alert-success">
+        <span><%= success %></span>
+      </div>
+    <% } %>
+
+    <form id="hfrsLoginForm">
+      <div class="hfrs-form-group">
+        <label for="email" class="hfrs-label hfrs-label-required">Institutional / Student Email</label>
+        <input type="email" id="email" name="email" class="hfrs-input" placeholder="e.g. john.doe@student.unicross.edu.ng" required autofocus>
+      </div>
+
+      <div class="hfrs-form-group">
+        <label for="password" class="hfrs-label hfrs-label-required">Password</label>
+        <input type="password" id="password" name="password" class="hfrs-input" placeholder="Enter your password" required>
+      </div>
+
+      <button type="submit" class="hfrs-btn hfrs-btn-primary" style="width: 100%; margin-top: 0.5rem; padding: 0.75rem;">
+        Log In to Registration Portal
+      </button>
+    </form>
+
+    <div style="margin-top: 1.5rem; text-align: center; font-size: 0.85rem; color: var(--hfrs-text-muted);">
+      Newly admitted fresher? <a href="/auth/register" style="color: var(--hfrs-navy-primary); font-weight: 600;">Create your account</a>
+    </div>
+
+    <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--hfrs-border-color); font-size: 0.75rem; color: #64748b; text-align: center;">
+      <strong>Test Credentials (Password for ALL: <code>password123</code>):</strong><br>
+      Admin: <code>admin@unicross.edu.ng</code><br>
+      Student (Jane): <code>jane.smith@student.unicross.edu.ng</code>
+    </div>
+  </div>
+</div>
+
+<script src="/js/auth.js"></script>
+<%- include('../partials/footer') %>
