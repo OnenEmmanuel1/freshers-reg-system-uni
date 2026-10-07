@@ -162,7 +162,7 @@
             </div>
           <% } else { %>
             <button id="hfrsPayBtn" class="hfrs-btn hfrs-btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1.05rem;" onclick="openHfrsPaymentModal()">
-              💳 Pay Acceptance & Registration Fee (₦25,000)
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.35rem; vertical-align: text-bottom;"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>Pay Acceptance & Registration Fee (₦25,000)
             </button>
           <% } %>
         </div>
@@ -172,7 +172,7 @@
           <div class="hfrs-modal-card" style="max-width: 440px;">
             <div class="hfrs-modal-header">
               <div>
-                <h3 style="font-size: 1.1rem; font-weight: 700; color: #000000; margin: 0;">💳 UNICROSS Payment Gateway</h3>
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: #000000; margin: 0; display: flex; align-items: center; gap: 0.35rem;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg> UNICROSS Payment Gateway</h3>
                 <small style="color: var(--hfrs-text-muted);">Simulated Secure Payment Gateway</small>
               </div>
               <button class="hfrs-modal-close" onclick="closeHfrsPaymentModal()">&times;</button>
@@ -186,9 +186,9 @@
               </div>
 
               <div style="display: flex; gap: 0.4rem; margin-bottom: 1rem;">
-                <button type="button" id="payTabCard" class="hfrs-btn hfrs-btn-primary" style="flex: 1; font-size: 0.8rem; padding: 0.35rem;" onclick="switchPaymentMethod('card')">💳 Card</button>
-                <button type="button" id="payTabBank" class="hfrs-btn hfrs-btn-outline" style="flex: 1; font-size: 0.8rem; padding: 0.35rem;" onclick="switchPaymentMethod('bank')">🏛️ Transfer</button>
-                <button type="button" id="payTabUssd" class="hfrs-btn hfrs-btn-outline" style="flex: 1; font-size: 0.8rem; padding: 0.35rem;" onclick="switchPaymentMethod('ussd')">📱 USSD</button>
+                <button type="button" id="payTabCard" class="hfrs-btn hfrs-btn-primary" style="flex: 1; font-size: 0.8rem; padding: 0.35rem; display: flex; align-items: center; gap: 0.35rem;" onclick="switchPaymentMethod('card')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg> Card</button>
+                <button type="button" id="payTabBank" class="hfrs-btn hfrs-btn-outline" style="flex: 1; font-size: 0.8rem; padding: 0.35rem; display: flex; align-items: center; gap: 0.35rem;" onclick="switchPaymentMethod('bank')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="22" x2="21" y2="22"></line><line x1="6" y1="18" x2="6" y2="11"></line><line x1="10" y1="18" x2="10" y2="11"></line><line x1="14" y1="18" x2="14" y2="11"></line><line x1="18" y1="18" x2="18" y2="11"></line><polygon points="12 2 20 7 4 7"></polygon></svg> Transfer</button>
+                <button type="button" id="payTabUssd" class="hfrs-btn hfrs-btn-outline" style="flex: 1; font-size: 0.8rem; padding: 0.35rem; display: flex; align-items: center; gap: 0.35rem;" onclick="switchPaymentMethod('ussd')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg> USSD</button>
               </div>
 
               <!-- Card Inputs View -->

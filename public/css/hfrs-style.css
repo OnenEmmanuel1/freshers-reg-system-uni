@@ -26,7 +26,7 @@
   --hfrs-border-color: #e2e8f0;     /* Default Clean Border */
   --hfrs-border-focus: #0066FF;     /* Active Focus Border */
   --hfrs-shadow-flat: 0 1px 3px rgba(0, 0, 0, 0.05);
-  --hfrs-radius: 6px;
+  --hfrs-radius: 4px;
 }
 
 /* Global Reset & Base Styles */
@@ -175,7 +175,7 @@ body {
   right: 0;
   background-color: #ffffff;
   border: 1px solid var(--hfrs-border-color);
-  border-radius: 8px;
+  border-radius: 12px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
   padding: 1rem;
   z-index: 1000;
@@ -245,7 +245,7 @@ body {
 
 .hfrs-modal-card {
   background-color: #ffffff;
-  border-radius: 8px;
+  border-radius: 12px;
   border: 1px solid var(--hfrs-border-color);
   width: 100%;
   max-width: 500px;
@@ -472,7 +472,7 @@ body {
 .hfrs-card {
   background-color: var(--hfrs-card-bg);
   border: 1px solid var(--hfrs-border-color);
-  border-radius: 8px;
+  border-radius: 0px;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
   box-shadow: var(--hfrs-shadow-flat);
@@ -497,7 +497,7 @@ body {
 .hfrs-top-stepper-card {
   background-color: #ffffff;
   border: 1px solid var(--hfrs-border-color);
-  border-radius: 8px;
+  border-radius: 0px;
   padding: 1.25rem 1.5rem;
   margin-bottom: 1.5rem;
   box-shadow: var(--hfrs-shadow-flat);
@@ -622,7 +622,7 @@ body {
   width: 100%;
   overflow-x: auto;
   background: #ffffff;
-  border-radius: 8px;
+  border-radius: 4px;
 }
 
 .hfrs-table {
@@ -854,10 +854,11 @@ body {
 .hfrs-metric-card {
   background-color: #ffffff;
   border: 1px solid var(--hfrs-border-color);
-  border-radius: 8px;
+  border-radius: 4px;
   padding: 1.25rem;
   display: flex;
   flex-direction: column;
+  border-bottom: 3px solid var(--hfrs-blue-primary);
 }
 
 .hfrs-metric-label {
@@ -893,7 +894,7 @@ body {
   background-color: #ffffff;
   width: 100%;
   max-width: 440px;
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 2.25rem;
   border: 1px solid var(--hfrs-border-color);
   box-shadow: 0 4px 12px rgba(0,0,0,0.06);

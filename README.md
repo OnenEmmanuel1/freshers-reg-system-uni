@@ -62,7 +62,11 @@ UniRegister is a production-ready, full-stack web application designed for **UNI
    ```
 
 3. **Initialize Database Schema & Seed Data**:
-   Import `schema.sql` and `seed.sql` into your MySQL instance:
+   You can seed the database directly via npm:
+   ```bash
+   npm run seed
+   ```
+   *Or manually via MySQL CLI:*
    ```bash
    mysql -u root -p < schema.sql
    mysql -u root -p < seed.sql
